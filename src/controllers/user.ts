@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import User from "../models/user";
 import UserService from "../service/user.service";
 import { HttpStatusCode } from "axios";
 import { ProcessError } from "../helper/Error/errorHandler";
 import { BadRequestException } from "../helper/Error/BadRequestException/BadRequestException";
 import { validate } from "../helper/function/validator";
 import { postUserValidator } from "../helper/validator/postUser.validator";
+import { checkReferralCodeValidator } from "../helper/validator/checkReferralCode";
 
 export class UserController {
   userServices: UserService;
@@ -52,12 +52,10 @@ export class UserController {
 
   async update(req: Request, res: Response) {
     try {
-      const [affectedRows] = await User.update(req.body, {
-        where: { id: req.params.id },
-      });
-      res.json({
-        affectedRows: affectedRows || 0,
-      });
+      const id = Number(req.params.id);
+      if (!id) throw new BadRequestException("Invalid id", {});
+      const user = await this.userServices.updateById(id, req.body);
+      res.status(HttpStatusCode.Ok).json(user.toJSON());
     } catch (err) {
       ProcessError(err, res);
     }
@@ -70,6 +68,22 @@ export class UserController {
       const affectedRows = await this.userServices.deleteById(id);
       res.status(HttpStatusCode.Ok).json({
         affectedRows: affectedRows || 0,
+      });
+    } catch (err) {
+      ProcessError(err, res);
+    }
+  }
+
+  async checkReferralCode(req: Request, res: Response) {
+    try {
+      // const referralCode = req.body.referralCode;
+      const body = await validate<{ referralCode: string }>(
+        checkReferralCodeValidator,
+        req.body
+      );
+      const user = await this.userServices.checkReferralCode(body.referralCode);
+      res.status(HttpStatusCode.Ok).json({
+        message: "Referral code is valid",
       });
     } catch (err) {
       ProcessError(err, res);

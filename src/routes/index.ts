@@ -1,13 +1,16 @@
 import { Request, Response, Router } from "express";
 import { UserController } from "../controllers/user";
+import EventController from "../controllers/event.controller";
 
 export default class MainRouter {
   router: Router;
   userController: UserController;
+  eventController: EventController;
 
   constructor() {
     // Initialize controllers objects
     this.userController = new UserController();
+    this.eventController = new EventController();
 
     // Initialize router object
     this.router = Router({ mergeParams: true });
@@ -38,6 +41,16 @@ export default class MainRouter {
       )
       .post((req: Request, res: Response) =>
         this.userController.create(req, res)
+      );
+
+    this.router.post("/check/referral-code", (req: Request, res: Response) =>
+      this.userController.checkReferralCode(req, res)
+    );
+
+    this.router
+      .route("/event")
+      .post((req: Request, res: Response) =>
+        this.eventController.create(req, res)
       );
   }
 }

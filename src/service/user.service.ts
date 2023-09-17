@@ -1,17 +1,28 @@
 import { Op } from "sequelize";
+import User, { UserCreationAttributes } from "../database/models/user";
 import { BadRequestException } from "../helper/Error/BadRequestException/BadRequestException";
 import { NotFoundException } from "../helper/Error/NotFound/NotFoundException";
 import { removeLimitAndPage } from "../helper/function/filteredData";
+import { getUniqId } from "../helper/function/getUniqId";
 import { IPaginate } from "../helper/interface/paginate/paginate.interface";
-import User, { UserCreationAttributes } from "../models/user";
-
+import bcrypt from "bcrypt";
 export default class UserService {
   async create(input: UserCreationAttributes) {
     try {
-      const user = await User.create(input);
+      const isExist = !!(await this.gets({ email: input.email })).length;
+      if (isExist) throw new BadRequestException("Email already exist", {});
+      const referralCode = getUniqId({
+        length: 6,
+      });
+      const hashPassword = await bcrypt.hash(input.password, 10);
+      const user = await User.create({
+        ...input,
+        uniqueId: referralCode,
+        password: hashPassword,
+      });
       return user;
     } catch (error: any) {
-      throw new Error(`Error creating user: ${error.message}`);
+      throw error;
     }
   }
 
@@ -87,6 +98,17 @@ export default class UserService {
       return users;
     } catch (error: any) {
       throw new BadRequestException(`Error paginating users: ${error.message}`);
+    }
+  }
+
+  async checkReferralCode(referralCode: string) {
+    try {
+      const user = await this.gets({ uniqueId: referralCode });
+      if (!user.length)
+        throw new NotFoundException("Referral code is invalid!", {});
+      return user[0];
+    } catch (error: any) {
+      throw error;
     }
   }
 }

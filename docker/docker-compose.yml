@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  olshop_api:
+    image: eventopia-api:latest
+    container_name: eventopia_api
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    env_file:
+      - ../.env
+    networks:
+      - eventopia_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  eventopia_network:
+    name: eventopia_network
+    driver: bridge
