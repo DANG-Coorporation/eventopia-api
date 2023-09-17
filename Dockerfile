@@ -23,6 +23,6 @@ COPY ./start.sh ./
 RUN chmod +x ./start.sh
 
 # Start the application using the start script
-# CMD ["./start.sh"]
+CMD ["./start.sh"]
 
-CMD [ "tail", "-f", "/dev/null" ]
+# CMD [ "tail", "-f", "/dev/null" ]
