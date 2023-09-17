@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart:dev": "npm run build",
     "start:dev": "npx concurrently --kill-others \"tsc -w\" \"nodemon dist/index.js\"",
-    "prestart:prod": "npm run build && npx sequelize-cli db:migrate",
+    "prestart:prod": "npm run build && npx sequelize-cli db:migrate --env production",
     "start:prod": "node dist/index.js",
     "start": "node dist/index.js",
     "dev": "node dist/index.js",
