@@ -1,0 +1,30 @@
+name: Deploy with Docker
+
+on:
+  push:
+    branches:
+      - development  # Change this to the branch you want to trigger the workflow on
+  pull_request:
+    branches:
+      - development  # Change this to the branch you want to trigger on pull requests
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "$WORKFLOW_EVENTOPIA_API_SSH_PRIVATE_KEY" > ~/.ssh/workflow_eventopia_api
+        chmod 600 ~/.ssh/workflow_eventopia_api
+        ssh-keyscan your_server_ip >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts
+
+    - name: Deploy to VPS
+      run: |
+        # Connect to the server and run Docker commands
+        ssh -i ~/.ssh/workflow_eventopia_api root@203.175.11.82 "cd /eventopia/docker && ./build.sh && docker-compose up -d"
