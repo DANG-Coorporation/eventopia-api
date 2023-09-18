@@ -3,14 +3,20 @@ name: Deploy with Docker
 on:
   push:
     branches:
-      - development  # Change this to the branch you want to trigger the workflow on
+      - development
   pull_request:
     branches:
-      - development  # Change this to the branch you want to trigger on pull requests
+      - development
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    env:
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
 
     steps:
     - name: Checkout code
@@ -19,12 +25,12 @@ jobs:
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
-        echo "$WORKFLOW_EVENTOPIA_API_SSH_PRIVATE_KEY" > ~/.ssh/workflow_eventopia_api
-        chmod 600 ~/.ssh/workflow_eventopia_api
-        ssh-keyscan your_server_ip >> ~/.ssh/known_hosts
+        echo "$SSH_PASSWORD" > ~/.ssh/workflow_eventopia_api_password
+        chmod 600 ~/.ssh/workflow_eventopia_api_password
+        ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
         chmod 644 ~/.ssh/known_hosts
 
     - name: Deploy to VPS
       run: |
         # Connect to the server and run Docker commands
-        ssh -i ~/.ssh/workflow_eventopia_api root@203.175.11.82 "cd /eventopia/docker && ./build.sh && docker-compose up -d"
+        sshpass -p "$(cat ~/.ssh/workflow_eventopia_api_password)" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "cd /eventopia/docker && ./build.sh && docker-compose up -d"
