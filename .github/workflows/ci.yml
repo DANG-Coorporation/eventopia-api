@@ -33,4 +33,4 @@ jobs:
     - name: Deploy to VPS
       run: |
         # Connect to the server and run Docker commands
-        sshpass -p "$(cat ~/.ssh/workflow_eventopia_api_password)" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "cd /eventopia/docker && ./build.sh && docker-compose up -d"
+        sshpass -p "$(cat ~/.ssh/workflow_eventopia_api_password)" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "cd ~/eventopia/docker && ./build.sh && docker-compose up -d"
