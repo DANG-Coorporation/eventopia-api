@@ -1,10 +1,11 @@
 name: Deploy Eventopia API
 
 on:
-  push:
-    branches:
-      - 'release/*'
-      - 'development'
+  [workflow_dispatch]
+  # push:
+  #   branches:
+  #     - 'release/*'
+  #     - 'development'
 
 
 jobs:
