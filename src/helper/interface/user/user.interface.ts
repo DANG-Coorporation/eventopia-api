@@ -3,3 +3,7 @@ export interface IUser {
   lastname?: string;
   age?: number;
 }
+
+export interface IReferralCode {
+  referralCode: string;
+}

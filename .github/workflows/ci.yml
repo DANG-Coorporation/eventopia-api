@@ -1,0 +1,36 @@
+name: Deploy Eventopia API
+
+on:
+  [workflow_dispatch]
+  # push:
+  #   branches:
+  #     - 'release/*'
+  #     - 'development'
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PASSWORD" > ~/.ssh/workflow_eventopia_api_password
+        chmod 600 ~/.ssh/workflow_eventopia_api_password
+        ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts
+
+    - name: Deploy to VPS
+      run: |
+        # Connect to the server and run Docker commands
+        sshpass -p "$(cat ~/.ssh/workflow_eventopia_api_password)" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "cd ~/eventopia/docker && ./build.sh && docker-compose up -d"
