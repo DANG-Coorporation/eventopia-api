@@ -9,6 +9,8 @@ const configConstants = {
   DB_PORT: parseInt(process.env.DB_PORT ?? "1433", 10),
   DB_MAX_POOL: parseInt(process.env.MAX_POOL ?? "20", 10),
   DB_MIN_POOL: parseInt(process.env.MIN_POOL ?? "1", 10),
+  JWT_SECRET_ACCESS_TOKEN: process.env.JWT_SECRET_ACCESS_TOKEN ?? "secret",
+  JWT_SECRET_REFRESH_TOKEN: process.env.JWT_SECRET_REFRESH_TOKEN ?? "secret",
 };
 
 export default configConstants;
