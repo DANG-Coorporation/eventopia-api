@@ -1,8 +1,12 @@
 import sequelize, { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 import configConstants from "./constants";
+import path from "path";
 dotenv.config();
 
+const sequelizeConfig = path.resolve(__dirname, "./config.js");
+const env = process.env.NODE_ENV || "development";
+const config = require(sequelizeConfig)[env];
 export default class Database {
   db: string;
   user: string;
@@ -14,19 +18,16 @@ export default class Database {
   database: sequelize.Sequelize;
 
   constructor() {
-    this.db = configConstants.DB_NAME;
-    this.user = configConstants.DB_USER;
-    this.password = configConstants.DB_PASS;
-    this.host = configConstants.DB_HOST;
-    this.port = configConstants.DB_PORT;
+    this.db = config.database;
+    this.user = config.username;
+    this.password = config.password;
+    this.host = config.host;
+    this.port = config.port;
     this.maxPool = configConstants.DB_MAX_POOL;
     this.minPool = configConstants.DB_MIN_POOL;
     this.database = new Sequelize(this.db, this.user, this.password, {
       host: this.host,
       dialect: "mysql",
-      //   dialectOptions: {
-      //     encrypt: false,
-      //   },
       port: this.port,
       logging: false,
       operatorsAliases: {
