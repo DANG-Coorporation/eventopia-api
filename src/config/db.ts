@@ -4,7 +4,7 @@ import configConstants from "./constants";
 import path from "path";
 dotenv.config();
 
-const sequelizeConfig = path.resolve(__dirname, "./config.js");
+const sequelizeConfig = path.resolve(__dirname, "./config");
 const env = process.env.NODE_ENV || "development";
 const config = require(sequelizeConfig)[env];
 export default class Database {
