@@ -118,17 +118,24 @@ export default class DokuService {
 
   async handlePaymentNotification(headers: any, payload: any) {
     const Digest = await this.generateDigest(payload);
-    const clientId = headers["Client-Id"];
-    const requestId = headers["Request-Id"];
-    const requestTimestamp = headers["Request-Timestamp"];
-    const requestTarget = headers["Request-Target"];
+    const clientId = headers["client-id"];
+    const requestId = headers["request-id"];
+    const requestTimestamp = headers["request-timestamp"];
+    const requestTarget = "/external/doku-payment-notification";
     const secretKey = "SK-7WH5ubv2ga7SWwFhkh29";
-    const signatureString = `Client-Id:${clientId}\nRequest-Id:${requestId}\nRequest-Timestamp:${requestTimestamp}\nRequest-Target:${requestTarget}\nDigest:${Digest}`;
+    let signatureString =
+      `Client-Id:${clientId}\n` +
+      `Request-Id:${requestId}\n` +
+      `Request-Timestamp:${requestTimestamp}\n` +
+      `Request-Target:${requestTarget}\n` +
+      `Digest:${Digest}`;
+    console.log(`\nSIGNATURE STRING\n${signatureString}`);
     const hmac = crypto.createHmac("sha256", secretKey);
     hmac.update(signatureString);
     const signature = `HMACSHA256=${hmac.digest("base64")}`;
-
-    if (signature !== headers["Signature"]) {
+    console.log("\nSIGNATURE1", signature);
+    console.log("SIGNATURE2", headers["signature"]);
+    if (signature !== headers["signature"]) {
       throw new UnprocessableEntityException("Invalid Signature", {});
     }
 
