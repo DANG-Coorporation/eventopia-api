@@ -1,16 +1,19 @@
 import { Request, Response, Router } from "express";
 import { UserController } from "../controllers/user";
 import EventController from "../controllers/event.controller";
+import DokuTestController from "../controllers/dokuTest.controller";
 
 export default class MainRouter {
   router: Router;
   userController: UserController;
   eventController: EventController;
+  testDokuController: DokuTestController;
 
   constructor() {
     // Initialize controllers objects
     this.userController = new UserController();
     this.eventController = new EventController();
+    this.testDokuController = new DokuTestController();
 
     // Initialize router object
     this.router = Router({ mergeParams: true });
@@ -52,5 +55,9 @@ export default class MainRouter {
       .post((req: Request, res: Response) =>
         this.eventController.create(req, res)
       );
+
+    this.router.post("/test/get-payment-code", (req: Request, res: Response) =>
+      this.testDokuController.generatePaymentCode(req, res)
+    );
   }
 }
