@@ -4,6 +4,9 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import MainRouter from "./routes";
+import AuthRouter from "./routes/auth";
+import OrderRouter from "./routes/order";
+import ExternalRouter from "./routes/external";
 
 export default class Server {
   expressInstance: express.Express;
@@ -32,8 +35,14 @@ export default class Server {
   private routesSetup() {
     // Instantiate mainRouter object
     let router = new MainRouter().router;
+    let authRouter = new AuthRouter().router;
+    let orderRouter = new OrderRouter().router;
+    let externalRoute = new ExternalRouter().router;
 
     // Add to server routes
     this.expressInstance.use("/", router);
+    this.expressInstance.use("/auth", authRouter);
+    this.expressInstance.use("/order", orderRouter);
+    this.expressInstance.use("/external", externalRoute);
   }
 }

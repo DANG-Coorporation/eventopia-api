@@ -6,7 +6,13 @@ import { removeLimitAndPage } from "../helper/function/filteredData";
 import { getUniqId } from "../helper/function/getUniqId";
 import { IPaginate } from "../helper/interface/paginate/paginate.interface";
 import bcrypt from "bcrypt";
+import JwtService from "./jwt.service";
 export default class UserService {
+  jwtService: JwtService;
+  constructor() {
+    this.jwtService = new JwtService();
+  }
+
   async create(input: UserCreationAttributes) {
     try {
       const isExist = !!(await this.gets({ email: input.email })).length;
@@ -107,6 +113,68 @@ export default class UserService {
       if (!user.length)
         throw new NotFoundException("Referral code is invalid!", {});
       return user[0];
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async login(email: string, password: string) {
+    try {
+      const user = await this.findOne({ email });
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) throw new BadRequestException("Invalid password", {});
+      const payload = await this.getPayload(user);
+      const accessToken = await this.jwtService.generateToken(payload);
+      const refreshToken = await this.jwtService.generateRefreshToken({
+        id: user.id,
+      });
+      return {
+        accessToken,
+        refreshToken,
+      };
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async verifyToken(token: string) {
+    try {
+      const user = await this.jwtService.verifyToken(token);
+      return user;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async refreshToken(token: string) {
+    try {
+      const refreshTokenPayload = await this.jwtService.verifyRefreshToken(
+        token
+      );
+
+      const user = await this.findOne({ id: refreshTokenPayload.id });
+      const accessToken = await this.jwtService.generateToken(
+        await this.getPayload(user)
+      );
+      const refreshToken = await this.jwtService.generateRefreshToken({
+        id: user.id,
+      });
+      return {
+        accessToken,
+        refreshToken,
+      };
+    } catch (error: any) {
+      throw error;
+    }
+  }
+  async getPayload(user: UserCreationAttributes) {
+    try {
+      const payload = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      };
+      return payload;
     } catch (error: any) {
       throw error;
     }

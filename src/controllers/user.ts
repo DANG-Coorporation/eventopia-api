@@ -6,6 +6,7 @@ import { BadRequestException } from "../helper/Error/BadRequestException/BadRequ
 import { validate } from "../helper/function/validator";
 import { postUserValidator } from "../helper/validator/postUser.validator";
 import { checkReferralCodeValidator } from "../helper/validator/checkReferralCode";
+import { loginValidator } from "../helper/validator/login.validator";
 
 export class UserController {
   userServices: UserService;
@@ -87,6 +88,41 @@ export class UserController {
       });
     } catch (err) {
       ProcessError(err, res);
+    }
+  }
+
+  async login(req: Request, res: Response): Promise<void> {
+    try {
+      const body = await validate<{ email: string; password: string }>(
+        loginValidator,
+        req.body
+      );
+      const user = await this.userServices.login(body.email, body.password);
+      res.status(HttpStatusCode.Ok).json(user);
+    } catch (error) {
+      ProcessError(error, res);
+    }
+  }
+
+  async verifyToken(req: Request, res: Response): Promise<void> {
+    try {
+      const token = <string>req.headers.authorization;
+      if (!token) throw new BadRequestException("Invalid token", {});
+      const user = await this.userServices.verifyToken(token.split(" ")[1]);
+      res.status(HttpStatusCode.Ok).json(user);
+    } catch (error) {
+      ProcessError(error, res);
+    }
+  }
+
+  async refreshToken(req: Request, res: Response): Promise<void> {
+    try {
+      const token = <string>req.headers.authorization;
+      if (!token) throw new BadRequestException("Invalid token", {});
+      const user = await this.userServices.refreshToken(token.split(" ")[1]);
+      res.status(HttpStatusCode.Ok).json(user);
+    } catch (error) {
+      ProcessError(error, res);
     }
   }
 }

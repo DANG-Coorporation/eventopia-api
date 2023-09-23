@@ -13,8 +13,9 @@ export interface EventAttributes {
   isPublic?: boolean;
   eventStartDateTime: Date;
   eventEndDateTime: Date;
+  cityId?: number;
+  provinceId?: number;
   address: string;
-  city: string;
   latitude: string;
   longitude: string;
   description: string;
@@ -75,7 +76,7 @@ class Event
 Event.init(
   {
     id: {
-      type: new DataTypes.BIGINT(),
+      type: new DataTypes.INTEGER(),
       primaryKey: true,
       autoIncrement: true,
     },
@@ -84,11 +85,11 @@ Event.init(
       allowNull: false,
     },
     formatId: {
-      type: new DataTypes.BIGINT(),
+      type: new DataTypes.INTEGER(),
       allowNull: false,
     },
     topicId: {
-      type: new DataTypes.BIGINT(),
+      type: new DataTypes.INTEGER(),
       allowNull: false,
     },
     coverUrl: {
@@ -116,9 +117,13 @@ Event.init(
       type: new DataTypes.STRING(255),
       allowNull: false,
     },
-    city: {
-      type: new DataTypes.STRING(255),
-      allowNull: false,
+    cityId: {
+      type: new DataTypes.INTEGER(),
+      allowNull: true,
+    },
+    provinceId: {
+      type: new DataTypes.INTEGER(),
+      allowNull: true,
     },
     latitude: {
       type: new DataTypes.STRING(255),

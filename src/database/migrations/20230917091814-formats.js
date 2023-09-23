@@ -12,7 +12,7 @@ module.exports = {
      */
     queryInterface.createTable(tableName, {
       id: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
@@ -22,9 +22,11 @@ module.exports = {
       },
       createdAt: {
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
   },

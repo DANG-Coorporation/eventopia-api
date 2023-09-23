@@ -1,19 +1,20 @@
 "use strict";
+
 /** @type {import('sequelize-cli').Migration} */
+const tableName = "invoiceNo";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("cities", {
+    /**
+     * Add altering commands here.
+     *
+     * Example:
+     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
+     */
+    await queryInterface.createTable(tableName, {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        type: Sequelize.INTEGER,
         primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      provinceId: {
-        type: Sequelize.INTEGER,
-      },
-      name: {
-        type: Sequelize.STRING,
+        autoIncrement: true,
       },
       createdAt: {
         allowNull: false,
@@ -27,7 +28,14 @@ module.exports = {
       },
     });
   },
+
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("cities");
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('users');
+     */
+    await queryInterface.dropTable(tableName);
   },
 };

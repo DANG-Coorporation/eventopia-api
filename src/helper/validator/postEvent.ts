@@ -31,9 +31,11 @@ export const postEventValidator = {
     type: "string",
     max: 255,
   },
-  city: {
-    type: "string",
-    max: 255,
+  cityId: {
+    type: "number",
+  },
+  provinceId: {
+    type: "number",
   },
   latitude: {
     type: "string",
@@ -98,5 +100,36 @@ export const postEventValidator = {
     type: "boolean",
     optional: true,
     default: false,
+  },
+  eventTickets: {
+    type: "array",
+    items: {
+      type: "object",
+      props: {
+        name: {
+          type: "string",
+          max: 255,
+          min: 3,
+        },
+        description: {
+          type: "string",
+          max: 255,
+          min: 3,
+        },
+        type: {
+          type: "string",
+          max: 255,
+          min: 3,
+        },
+        price: {
+          type: "number",
+          min: 0,
+        },
+        quantity: {
+          type: "number",
+          min: 0,
+        },
+      },
+    },
   },
 };
