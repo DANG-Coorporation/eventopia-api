@@ -12,7 +12,7 @@ module.exports = {
      */
     queryInterface.createTable(tableName, {
       id: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
