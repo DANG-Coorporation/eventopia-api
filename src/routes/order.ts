@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import OrderController from "../controllers/order.controller";
 
-export default class MainRouter {
+export default class OrderRouter {
   router: Router;
   orderController: OrderController;
 

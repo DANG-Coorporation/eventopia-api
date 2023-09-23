@@ -5,10 +5,11 @@ let databaseInstance = new Database().database;
 
 export interface OrderAttributes {
   id?: number;
+  invoiceNo: string;
   userId: number;
   eventId: number;
   eventTicketId: number;
-  paymentMethodId: number;
+  paymentMethod: string;
   paymentStatus: string;
   quantity: number;
   createdAt?: Date;
@@ -24,10 +25,11 @@ class Orders
   implements OrderAttributes
 {
   public id!: number;
+  public invoiceNo!: string;
   public userId!: number;
   public eventId!: number;
   public eventTicketId!: number;
-  public paymentMethodId!: number;
+  public paymentMethod!: string;
   public paymentStatus!: string;
   public quantity!: number;
   public readonly createdAt!: Date;
@@ -42,6 +44,10 @@ Orders.init(
       primaryKey: true,
       type: DataTypes.INTEGER(),
     },
+    invoiceNo: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
     userId: {
       type: DataTypes.INTEGER(),
       allowNull: false,
@@ -54,8 +60,8 @@ Orders.init(
       type: DataTypes.INTEGER(),
       allowNull: false,
     },
-    paymentMethodId: {
-      type: DataTypes.INTEGER(),
+    paymentMethod: {
+      type: DataTypes.STRING(),
       allowNull: false,
     },
     paymentStatus: {

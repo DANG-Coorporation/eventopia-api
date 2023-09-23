@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { ProcessError } from "../helper/Error/errorHandler";
-import OrderService from "../service/order.service";
+import OrderService, { ICreateOrder } from "../service/order.service";
+import { validate } from "../helper/function/validator";
+import { postOrderValidator } from "../helper/validator/createOrder.validator";
 
 export default class OrderController {
   orderService: OrderService;
@@ -11,7 +13,8 @@ export default class OrderController {
 
   async createOrder(req: Request, res: Response) {
     try {
-      const result = await this.orderService.createOrder();
+      const body = await validate<ICreateOrder>(postOrderValidator, req.body);
+      const result = await this.orderService.createOrder(body);
       res.status(200).json({
         status: 200,
         message: "Success",

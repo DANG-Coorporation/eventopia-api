@@ -13,11 +13,11 @@ export default class DokuTestController {
 
   async generatePaymentCode(req: Request, res: Response) {
     try {
-      const result = await this.orderService.createOrder();
+      // const result = await this.orderService.createOrder();
       res.status(200).json({
         status: 200,
         message: "Success",
-        data: result,
+        data: "result",
       });
     } catch (error: any) {
       ProcessError(error, res);
