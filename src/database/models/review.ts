@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Database from "../../config/db";
 
-let databaseInstance = new Database().database;
+const databaseInstance = Database.database;
 
 export interface ReviewAttributes {
   id?: number;
