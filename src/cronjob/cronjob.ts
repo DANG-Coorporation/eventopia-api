@@ -4,6 +4,7 @@ import { DateTime } from "luxon";
 import cron from "node-cron";
 import { Op } from "sequelize";
 import Orders from "../database/models/order";
+import { paymentStatus } from "../config/payment";
 
 export class CronJob {
   constructor() {
@@ -26,7 +27,7 @@ export class CronJob {
     try {
       const pendingOrders = await Orders.findAll({
         where: {
-          paymentStatus: "PENDING",
+          paymentStatus: paymentStatus.PENDING,
           createdAt: {
             [Op.lte]: DateTime.now().minus({ minutes: 61 }).toJSDate(),
           },
@@ -35,11 +36,11 @@ export class CronJob {
 
       const affectedCount = await Orders.update(
         {
-          paymentStatus: "EXPIRED",
+          paymentStatus: paymentStatus.EXPIRED,
         },
         {
           where: {
-            paymentStatus: "PENDING",
+            paymentStatus: paymentStatus.PENDING,
             createdAt: {
               [Op.lte]: DateTime.now().minus({ minutes: 61 }).toJSDate(),
             },
