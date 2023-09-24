@@ -9,11 +9,12 @@ export default class AuthMiddleware {
       const bypassAuth = ["/external", "/auth", "/master-data", "/users"];
       for (let whitelist of bypassAuth) {
         if (req.path.startsWith(whitelist)) {
-          next();
-          return;
+          return next();
         }
       }
-      if (req.path === "/") next();
+      if (req.path === "/") {
+        return next();
+      }
       if (!req.headers.authorization)
         throw new UnauthorizedException("Unauthorized", {});
 
