@@ -32,15 +32,6 @@ class Database {
       dialect: "mysql",
       port: this.port,
       logging: false,
-      operatorsAliases: {
-        $and: sequelize.Op.and,
-        $or: sequelize.Op.or,
-        $eq: sequelize.Op.eq,
-        $gt: sequelize.Op.gt,
-        $lt: sequelize.Op.lt,
-        $lte: sequelize.Op.lte,
-        $like: sequelize.Op.like,
-      },
       pool: {
         max: this.maxPool,
         min: this.minPool,
