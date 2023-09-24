@@ -80,7 +80,7 @@ export default class OrderService {
         quantity: input.quantity,
         eventTicketId: ticket.id,
         paymentMethod: input.paymentChannel,
-        paymentStatus: "pending",
+        paymentStatus: "PENDING",
       });
       return {
         order,
