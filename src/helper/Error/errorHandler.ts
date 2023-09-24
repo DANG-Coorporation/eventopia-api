@@ -5,9 +5,11 @@ import { ForbiddenException } from "./Forbidden/ForbiddenException";
 import { UnauthorizedException } from "./UnauthorizedException/UnauthorizedException";
 import { UnprocessableEntityException } from "./UnprocessableEntity/UnprocessableEntityException";
 import { NotFoundException } from "./NotFound/NotFoundException";
+import { DateTime } from "luxon";
 
 export function ProcessError(err: any, res: Response) {
-  console.log("ERROR", err);
+  const dateTime = DateTime.now().toFormat("yyyy-MM-dd HH:mm:ss");
+  console.log(`[ERROR] [${dateTime}]\n`, err);
   if (err instanceof BadRequestException) {
     res.status(HttpStatusCode.BadRequest).json({
       message: err.message,
