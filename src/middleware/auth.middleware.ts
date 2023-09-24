@@ -1,3 +1,5 @@
+/// <reference path="../controllers/custom.d.ts" />
+
 import { NextFunction, Request, Response } from "express";
 import { UnauthorizedException } from "../helper/Error/UnauthorizedException/UnauthorizedException";
 import { ProcessError } from "../helper/Error/errorHandler";
