@@ -1,3 +1,5 @@
+/// <reference path="custom.d.ts" />
+
 import { HttpStatusCode } from "axios";
 import { EventAttributes } from "../database/models/event";
 import { validate } from "../helper/function/validator";

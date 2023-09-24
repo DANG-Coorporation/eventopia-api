@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Database from "../../config/db"; // Pastikan path ke Database sesuai dengan struktur proyek Anda
 
-let databaseInstance = new Database().database;
+const databaseInstance = Database.database;
 
 export interface CitiesAttributes {
   id?: number;

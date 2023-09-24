@@ -7,6 +7,8 @@ import MainRouter from "./routes";
 import AuthRouter from "./routes/auth";
 import OrderRouter from "./routes/order";
 import ExternalRouter from "./routes/external";
+import AuthMiddleware from "./middleware/auth.middleware";
+import { CronJob } from "./cronjob/cronjob";
 
 export default class Server {
   expressInstance: express.Express;
@@ -15,6 +17,7 @@ export default class Server {
     this.expressInstance = express();
     this.middlewareSetup();
     this.routesSetup();
+    new CronJob();
   }
 
   private middlewareSetup() {
@@ -30,6 +33,7 @@ export default class Server {
 
     // Setup requests gZip compression (Should be the last middleware)
     this.expressInstance.use(compression());
+    this.expressInstance.use(new AuthMiddleware().checkAuth);
   }
 
   private routesSetup() {
