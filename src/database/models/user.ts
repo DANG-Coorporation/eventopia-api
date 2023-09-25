@@ -11,6 +11,7 @@ export interface UserAttributes {
   email: string;
   uniqueId: string;
   password: string;
+  googleUid?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -28,6 +29,7 @@ class Users
   public email!: string;
   public password!: string;
   public uniqueId!: string;
+  public googleUid!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -54,6 +56,10 @@ Users.init(
     uniqueId: {
       type: new DataTypes.STRING(255),
       allowNull: false,
+    },
+    googleUid: {
+      type: new DataTypes.STRING(255),
+      allowNull: true,
     },
   },
   {

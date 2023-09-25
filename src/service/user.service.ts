@@ -94,7 +94,7 @@ export default class UserService {
       const users = await User.findAndCountAll({
         where: {
           name: {
-            [Op.like]: `%${conditions.name}%`,
+            [Op.like]: `%${conditions.name ?? ""}%`,
           },
         },
         limit,
@@ -140,6 +140,7 @@ export default class UserService {
   async verifyToken(token: string) {
     try {
       const user = await this.jwtService.verifyToken(token);
+      console.log("userxx", user);
       return user;
     } catch (error: any) {
       throw error;

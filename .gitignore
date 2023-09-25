@@ -9,7 +9,7 @@ lerna-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
+eventopia-jcwdol-011-firebase-adminsdk-5yqm4-618f9fc9af.json
 # Runtime data
 pids
 *.pid
