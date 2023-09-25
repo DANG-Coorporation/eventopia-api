@@ -8,12 +8,15 @@ import { postUserValidator } from "../helper/validator/postUser.validator";
 import { checkReferralCodeValidator } from "../helper/validator/checkReferralCode";
 import { loginValidator } from "../helper/validator/login.validator";
 import ReferralLinks from "../database/models/referralLink";
+import JwtService from "../service/jwt.service";
 
 export class UserController {
   userServices: UserService;
+  jwtService: JwtService;
 
   constructor() {
     this.userServices = new UserService();
+    this.jwtService = new JwtService();
   }
 
   async paginate(req: Request, res: Response): Promise<void> {
@@ -115,9 +118,26 @@ export class UserController {
 
   async verifyToken(req: Request, res: Response): Promise<void> {
     try {
-      const token = <string>req.headers.authorization;
-      if (!token) throw new BadRequestException("Invalid token", {});
-      const user = await this.userServices.verifyToken(token.split(" ")[1]);
+      const token = req.headers.authorization;
+
+      if (!token) {
+        throw new BadRequestException("Invalid token", {});
+      }
+      const tokenString = token.split(" ")[1];
+      console.log("tokenString", tokenString);
+      let user;
+
+      try {
+        // Try to verify the token using your custom JWT service
+        user = await this.userServices.verifyToken(tokenString);
+        console.log("user", user);
+      } catch (error) {
+        // If JWT verification fails, try Firebase token verification
+        user = await this.jwtService.verifyFirebaseToken(tokenString);
+        console.log("user", user);
+      }
+
+      console.log(user);
       res.status(HttpStatusCode.Ok).json(user);
     } catch (error) {
       ProcessError(error, res);

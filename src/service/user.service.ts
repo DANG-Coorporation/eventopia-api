@@ -140,6 +140,7 @@ export default class UserService {
   async verifyToken(token: string) {
     try {
       const user = await this.jwtService.verifyToken(token);
+      console.log("userxx", user);
       return user;
     } catch (error: any) {
       throw error;
