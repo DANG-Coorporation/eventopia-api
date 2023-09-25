@@ -51,7 +51,7 @@ Users.init(
     },
     password: {
       type: new DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
     },
     uniqueId: {
       type: new DataTypes.STRING(255),
