@@ -25,6 +25,7 @@ export default class JwtService {
     try {
       return jwt.verify(token, configConstants.JWT_SECRET_ACCESS_TOKEN);
     } catch (error) {
+      console.log("JwtService:verifyToken:error");
       throw new ForbiddenException("Invalid token", {});
     }
   }
