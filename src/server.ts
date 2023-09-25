@@ -7,6 +7,7 @@ import MainRouter from "./routes";
 import AuthRouter from "./routes/auth";
 import OrderRouter from "./routes/order";
 import ExternalRouter from "./routes/external";
+import masterDataRouter from "./routes/masterData";
 
 export default class Server {
   expressInstance: express.Express;
@@ -38,11 +39,13 @@ export default class Server {
     let authRouter = new AuthRouter().router;
     let orderRouter = new OrderRouter().router;
     let externalRoute = new ExternalRouter().router;
+    let masterData = new masterDataRouter().router;
 
     // Add to server routes
     this.expressInstance.use("/", router);
     this.expressInstance.use("/auth", authRouter);
     this.expressInstance.use("/order", orderRouter);
     this.expressInstance.use("/external", externalRoute);
+    this.expressInstance.use("/master-data", masterData);
   }
 }
