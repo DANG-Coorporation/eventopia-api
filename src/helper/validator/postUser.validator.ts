@@ -16,4 +16,9 @@ export const postUserValidator = {
     min: 6,
     max: 255,
   },
+  referralCode: {
+    type: "string",
+    min: 6,
+    optional: true,
+  },
 };

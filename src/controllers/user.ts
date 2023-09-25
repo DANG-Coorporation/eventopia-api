@@ -7,6 +7,7 @@ import { validate } from "../helper/function/validator";
 import { postUserValidator } from "../helper/validator/postUser.validator";
 import { checkReferralCodeValidator } from "../helper/validator/checkReferralCode";
 import { loginValidator } from "../helper/validator/login.validator";
+import ReferralLinks from "../database/models/referralLink";
 
 export class UserController {
   userServices: UserService;
@@ -17,7 +18,7 @@ export class UserController {
 
   async paginate(req: Request, res: Response): Promise<void> {
     try {
-      const { page, limit } = req.query;
+      const { page = 1, limit = 10 } = req.query;
       const users = await this.userServices.page({
         page: Number(page),
         limit: Number(limit),
@@ -45,6 +46,15 @@ export class UserController {
     try {
       await validate(postUserValidator, req.body);
       const user = await this.userServices.create(req.body);
+      if (req.body.referralCode) {
+        const uplinkUser = await this.userServices.gets({
+          uniqueId: req.body.referralCode,
+        });
+        await ReferralLinks.create({
+          upLinkId: uplinkUser[0].id,
+          downLinkId: user.id,
+        });
+      }
       res.json(user.toJSON());
     } catch (err) {
       ProcessError(err, res);
@@ -77,12 +87,11 @@ export class UserController {
 
   async checkReferralCode(req: Request, res: Response) {
     try {
-      // const referralCode = req.body.referralCode;
       const body = await validate<{ referralCode: string }>(
         checkReferralCodeValidator,
         req.body
       );
-      const user = await this.userServices.checkReferralCode(body.referralCode);
+      await this.userServices.checkReferralCode(body.referralCode);
       res.status(HttpStatusCode.Ok).json({
         message: "Referral code is valid",
       });

@@ -94,7 +94,7 @@ export default class UserService {
       const users = await User.findAndCountAll({
         where: {
           name: {
-            [Op.like]: `%${conditions.name}%`,
+            [Op.like]: `%${conditions.name ?? ""}%`,
           },
         },
         limit,

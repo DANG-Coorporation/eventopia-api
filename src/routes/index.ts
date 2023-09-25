@@ -47,8 +47,10 @@ export default class MainRouter {
         this.userController.create(req, res)
       );
 
-    this.router.post("/check/referral-code", (req: Request, res: Response) =>
-      this.userController.checkReferralCode(req, res)
+    this.router.post(
+      "/users/check/referral-code",
+      (req: Request, res: Response) =>
+        this.userController.checkReferralCode(req, res)
     );
 
     this.router
