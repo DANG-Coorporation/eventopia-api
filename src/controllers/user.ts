@@ -9,6 +9,8 @@ import { checkReferralCodeValidator } from "../helper/validator/checkReferralCod
 import { loginValidator } from "../helper/validator/login.validator";
 import ReferralLinks from "../database/models/referralLink";
 import JwtService from "../service/jwt.service";
+import { createByGoogleValidator } from "../helper/validator/createUsersByGoogle";
+import { UserAttributes } from "../database/models/user";
 
 export class UserController {
   userServices: UserService;
@@ -150,6 +152,19 @@ export class UserController {
       if (!token) throw new BadRequestException("Invalid token", {});
       const user = await this.userServices.refreshToken(token.split(" ")[1]);
       res.status(HttpStatusCode.Ok).json(user);
+    } catch (error) {
+      ProcessError(error, res);
+    }
+  }
+
+  async createByGoogle(req: Request, res: Response): Promise<void> {
+    try {
+      const body = await validate<UserAttributes>(
+        createByGoogleValidator,
+        req.body
+      );
+      const result = await this.userServices.createByGoogle(body);
+      res.status(HttpStatusCode.Ok).json(result);
     } catch (error) {
       ProcessError(error, res);
     }
