@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import Database from "../../config/db";
 
 // Database connection instance
-let databaseInstance = new Database().database;
+const databaseInstance = Database.database;
 
 // User Interface
 export interface UserAttributes {

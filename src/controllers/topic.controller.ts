@@ -8,7 +8,7 @@ export default class TopicsController {
   async getAllTopics(req: Request, res: Response): Promise<void> {
     try {
       const topics = await topicsService.getAllTopics();
-      res.json(topics);
+      res.json({ statusCode: 200, message: "success", data: topics });
     } catch (err) {
       ProcessError(err, res);
     }

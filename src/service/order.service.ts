@@ -1,13 +1,13 @@
 import { DateTime } from "luxon";
-import InvoiceNo from "../database/models/invoiceNo";
-import DokuService from "./doku.service";
-import { paymentChannelLabel } from "../config/payment";
-import { UnprocessableEntityException } from "../helper/Error/UnprocessableEntity/UnprocessableEntityException";
-import Users from "../database/models/user";
+import { paymentChannelLabel, paymentStatus } from "../config/payment";
 import Event from "../database/models/event";
 import EventTickets from "../database/models/eventTicket";
+import InvoiceNo from "../database/models/invoiceNo";
 import Orders from "../database/models/order";
+import { UnprocessableEntityException } from "../helper/Error/UnprocessableEntity/UnprocessableEntityException";
 import { getUniqId } from "../helper/function/getUniqId";
+import DokuService from "./doku.service";
+import UserService from "./user.service";
 
 export interface ICreateOrder {
   paymentChannel: string;
@@ -19,9 +19,11 @@ export interface ICreateOrder {
 
 export default class OrderService {
   dokuService: DokuService;
+  userService: UserService;
 
   constructor() {
     this.dokuService = new DokuService();
+    this.userService = new UserService();
   }
 
   async createOrder(input: ICreateOrder) {
@@ -33,7 +35,7 @@ export default class OrderService {
         .padStart(6, "0")}`;
 
       let result;
-      const user = await Users.findOne({ where: { id: input.userId } });
+      const user = await this.userService.getById(input.userId);
       if (!user) {
         throw new UnprocessableEntityException("User not found", {});
       }
@@ -59,8 +61,8 @@ export default class OrderService {
           result = await this.dokuService.paymentBcaVa({
             invoiceNumber,
             amount: getTotalPrice(),
-            email: "scriptgalih@gmail.com",
-            name: "Galih Setyo Nugroho",
+            email: user.email,
+            name: user.name,
           });
           break;
 
@@ -80,7 +82,7 @@ export default class OrderService {
         quantity: input.quantity,
         eventTicketId: ticket.id,
         paymentMethod: input.paymentChannel,
-        paymentStatus: "pending",
+        paymentStatus: paymentStatus.PENDING,
       });
       return {
         order,

@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Database from "../../config/db";
 
-let databaseInstance = new Database().database;
+const databaseInstance = Database.database;
 
 export interface CartAttributes {
   id: number;
@@ -12,9 +12,7 @@ export interface CartAttributes {
   updatedAt: Date;
 }
 
-export interface CartCreationAttributes
-  extends Optional<CartAttributes, "id"> {}
-export interface CartInterface extends Required<CartAttributes> {}
+export interface CartCreationAttributes extends Optional<CartAttributes, "id"> {}
 
 class Carts
   extends Model<CartAttributes, CartCreationAttributes>
@@ -31,28 +29,28 @@ class Carts
 Carts.init(
   {
     id: {
-      type: DataTypes.INTEGER(),
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
     userId: {
-      type: DataTypes.INTEGER(),
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     eventId: {
-      type: DataTypes.INTEGER(),
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     deleted: {
-      type: DataTypes.BOOLEAN(),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     createdAt: {
-      type: DataTypes.DATE(),
+      type: DataTypes.DATE,
       allowNull: false,
     },
     updatedAt: {
-      type: DataTypes.DATE(),
+      type: DataTypes.DATE,
       allowNull: false,
     },
   },

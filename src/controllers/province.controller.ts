@@ -8,8 +8,12 @@ export default class ProvincesController {
   async createProvince(req: Request, res: Response): Promise<void> {
     try {
       const provinceData = req.body;
-      const province = await provinceService.createProvince(provinceData);
-      res.json(province);
+      const provinces = await provinceService.createProvince(provinceData);
+      res.json({
+        statusCode: 200,
+        message: "success",
+        data: provinces,
+      });
     } catch (err) {
       ProcessError(err, res);
     }
@@ -18,7 +22,11 @@ export default class ProvincesController {
   async getAllProvince(req: Request, res: Response) {
     try {
       const provinces = await provinceService.getAllProvinces();
-      res.json(provinces);
+      res.json({
+        statusCode: 200,
+        message: "success",
+        data: provinces,
+      });
     } catch (err) {
       ProcessError(err, res);
     }
