@@ -7,6 +7,7 @@ import MainRouter from "./routes";
 import AuthRouter from "./routes/auth";
 import OrderRouter from "./routes/order";
 import ExternalRouter from "./routes/external";
+import masterDataRouter from "./routes/masterData";
 import AuthMiddleware from "./middleware/auth.middleware";
 import { CronJob } from "./cronjob/cronjob";
 import UserRouter from "./routes/users";
@@ -44,6 +45,7 @@ export default class Server {
     let orderRouter = new OrderRouter().router;
     let externalRoute = new ExternalRouter().router;
     let userRouter = new UserRouter().router;
+    let masterData = new masterDataRouter().router;
 
     // Add to server routes
     this.expressInstance.use("/", router);
@@ -51,5 +53,6 @@ export default class Server {
     this.expressInstance.use("/order", orderRouter);
     this.expressInstance.use("/external", externalRoute);
     this.expressInstance.use("/users", userRouter);
+    this.expressInstance.use("/master-data", masterData);
   }
 }
