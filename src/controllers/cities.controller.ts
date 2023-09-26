@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ProcessError } from "../helper/Error/errorHandler";
 import CitiesService from "../service/citiies.service";
+import { HttpStatusCode } from "axios";
 
 export default class CitiesController {
   async getAllCities(req: Request, res: Response): Promise<void> {
@@ -18,7 +19,11 @@ export default class CitiesController {
       const cities = await CitiesService.getCitiesByProvinceId(
         Number(provinceId)
       );
-      res.json(cities);
+      res.status(HttpStatusCode.Ok).json({
+        statusCode: HttpStatusCode.Ok,
+        message: "Success",
+        data: cities,
+      });
     } catch (err) {
       ProcessError(err, res);
     }
