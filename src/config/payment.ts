@@ -28,3 +28,9 @@ export const paymentChannelLabel = {
     code: paymentChannel[4],
   },
 };
+
+export const paymentStatus = {
+  PENDING: "PENDING",
+  EXPIRED: "EXPIRED",
+  PAID: "PAID",
+};

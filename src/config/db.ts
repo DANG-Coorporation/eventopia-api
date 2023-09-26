@@ -7,7 +7,8 @@ dotenv.config();
 const sequelizeConfig = path.resolve(__dirname, "./config");
 const env = process.env.NODE_ENV || "development";
 const config = require(sequelizeConfig)[env];
-export default class Database {
+
+class Database {
   db: string;
   user: string;
   password: string;
@@ -16,8 +17,9 @@ export default class Database {
   maxPool: number;
   minPool: number;
   database: sequelize.Sequelize;
+  private static instance: Database | null = null; // Singleton instance
 
-  constructor() {
+  private constructor() {
     this.db = config.database;
     this.user = config.username;
     this.password = config.password;
@@ -30,15 +32,6 @@ export default class Database {
       dialect: "mysql",
       port: this.port,
       logging: false,
-      operatorsAliases: {
-        $and: sequelize.Op.and,
-        $or: sequelize.Op.or,
-        $eq: sequelize.Op.eq,
-        $gt: sequelize.Op.gt,
-        $lt: sequelize.Op.lt,
-        $lte: sequelize.Op.lte,
-        $like: sequelize.Op.like,
-      },
       pool: {
         max: this.maxPool,
         min: this.minPool,
@@ -63,4 +56,14 @@ export default class Database {
       // force: true
     });
   }
+
+  public static getInstance(): Database {
+    if (!Database.instance) {
+      Database.instance = new Database();
+    }
+    return Database.instance;
+  }
 }
+
+export default Database.getInstance(); // Export the singleton instance
+

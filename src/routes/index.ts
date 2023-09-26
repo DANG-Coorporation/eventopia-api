@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { UserController } from "../controllers/user";
 import EventController from "../controllers/event.controller";
 import DokuTestController from "../controllers/dokuTest.controller";
+import { HttpStatusCode } from "axios";
 
 export default class MainRouter {
   router: Router;
@@ -22,8 +23,8 @@ export default class MainRouter {
 
   private userRoutes() {
     this.router.get("/", (req, res) => {
-      res.json({
-        message: "Welcome to the API",
+      res.status(HttpStatusCode.Ok).send({
+        message: "Status OK",
       });
     });
 
