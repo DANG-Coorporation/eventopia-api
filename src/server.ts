@@ -11,6 +11,9 @@ import masterDataRouter from "./routes/masterData";
 import AuthMiddleware from "./middleware/auth.middleware";
 import { CronJob } from "./cronjob/cronjob";
 import UserRouter from "./routes/users";
+import CartRoute from "./routes/cart";
+import ReviewRouter from "./routes/review";
+import DocumentRouter from "./routes/document";
 
 export default class Server {
   expressInstance: express.Express;
@@ -46,6 +49,9 @@ export default class Server {
     let externalRoute = new ExternalRouter().router;
     let userRouter = new UserRouter().router;
     let masterData = new masterDataRouter().router;
+    let cartRouter = new CartRoute().router;
+    let reviewRouter = new ReviewRouter().router;
+    let documentRouter = new DocumentRouter().router;
 
     // Add to server routes
     this.expressInstance.use("/", router);
@@ -54,5 +60,8 @@ export default class Server {
     this.expressInstance.use("/external", externalRoute);
     this.expressInstance.use("/users", userRouter);
     this.expressInstance.use("/master-data", masterData);
+    this.expressInstance.use("/cart", cartRouter);
+    this.expressInstance.use("/review", reviewRouter);
+    this.expressInstance.use("/document", documentRouter);
   }
 }
