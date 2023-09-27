@@ -12,7 +12,6 @@ export default class DocumentController {
   async uploadDocument(req: Request, res: Response) {
     try {
       const file = req.file;
-      console.log(file);
       if (!file) {
         return res.status(400).json({ message: "No file provided" });
       }

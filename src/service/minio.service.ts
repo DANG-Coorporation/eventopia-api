@@ -49,9 +49,7 @@ export default class MinioService {
       console.info(
         `File ${objectName} uploaded successfully to bucket ${bucketName}`
       );
-      console.log(
-        `File ${objectName} uploaded successfully to bucket ${bucketName}`
-      );
+
       return `http://nawaytes.cloud:9000/${bucketName}/${objectName}`;
     } catch (error) {
       console.error("Error uploading file:", error);
