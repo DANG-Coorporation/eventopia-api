@@ -6,6 +6,7 @@ import { validate } from "../helper/function/validator";
 import { postEventValidator } from "../helper/validator/postEvent";
 import EventService from "../service/event.service";
 import { Request, Response } from "express";
+
 import { ProcessError } from "../helper/Error/errorHandler";
 
 interface EventTickets {
@@ -35,6 +36,28 @@ export default class EventController {
         await this.eventService.createTicket(eventId, eventTicket);
       }
       res.status(HttpStatusCode.Ok).send(event);
+    } catch (err) {
+      ProcessError(err, res);
+    }
+  }
+
+  async paginate(req: Request, res: Response): Promise<void> {
+    try {
+      const { page, limit, name, provinceId, cityId } = req.query;
+      const events = await this.eventService.page({
+        page: Number(page),
+        limit: Number(limit),
+        data: {
+          name: name as string | undefined,
+          provinceId: provinceId as number | undefined,
+          cityId: cityId as number | undefined,
+        },
+      });
+      res.json({
+        statusCode: 200,
+        message: "success",
+        data: events,
+      });
     } catch (err) {
       ProcessError(err, res);
     }
