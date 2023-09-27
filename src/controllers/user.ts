@@ -1,3 +1,4 @@
+/// <reference path="./custom.d.ts" />
 import { Request, Response } from "express";
 import UserService from "../service/user.service";
 import { HttpStatusCode } from "axios";
