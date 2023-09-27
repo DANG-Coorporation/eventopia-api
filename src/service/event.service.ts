@@ -55,11 +55,11 @@ export default class EventService {
         },
       };
 
-      if (conditions.provinceId == undefined) {
+      if (conditions.provinceId) {
         whereClause.provinceId = conditions.provinceId;
       }
 
-      if (conditions.cityId == undefined) {
+      if (conditions.cityId) {
         whereClause.cityId = conditions.cityId;
       }
 
