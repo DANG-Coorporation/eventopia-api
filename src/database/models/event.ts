@@ -1,5 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import Database from "../../config/db";
+import Cities from "./cities";
+import Provinces from "./province";
 
 const databaseInstance = Database.database;
 
@@ -208,5 +210,8 @@ Event.init(
     sequelize: databaseInstance,
   }
 );
+
+// Event.belongsTo(Provinces, { foreignKey: "provinceId", as: "province" });
+// Event.belongsTo(Cities, { foreignKey: "cityId", as: "city" });
 
 export default Event;

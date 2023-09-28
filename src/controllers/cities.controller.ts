@@ -7,7 +7,11 @@ export default class CitiesController {
   async getAllCities(req: Request, res: Response): Promise<void> {
     try {
       const cities = await CitiesService.getAllCities();
-      res.json(cities);
+      res.json({
+        statusCode: 200,
+        message: "Success",
+        data: cities,
+      });
     } catch (err) {
       ProcessError(err, res);
     }
