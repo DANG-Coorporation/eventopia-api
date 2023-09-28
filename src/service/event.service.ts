@@ -1,8 +1,5 @@
 import { Op } from "sequelize";
-import Event, {
-  EventAttributes,
-  EventCreationAttributes,
-} from "../database/models/event";
+import Event, { EventAttributes } from "../database/models/event";
 import EventTickets from "../database/models/eventTicket";
 import { removeLimitAndPage } from "../helper/function/filteredData";
 import { getUniqId } from "../helper/function/getUniqId";
@@ -63,7 +60,6 @@ export default class EventService {
         whereClause.cityId = conditions.cityId;
       }
 
-      console.log("Where Clause:", whereClause);
       const events = await Event.findAndCountAll({
         where: whereClause,
         limit: limit,

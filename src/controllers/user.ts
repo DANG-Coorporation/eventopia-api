@@ -127,20 +127,16 @@ export class UserController {
         throw new BadRequestException("Invalid token", {});
       }
       const tokenString = token.split(" ")[1];
-      console.log("tokenString", tokenString);
       let user;
 
       try {
         // Try to verify the token using your custom JWT service
         user = await this.userServices.verifyToken(tokenString);
-        console.log("user", user);
       } catch (error) {
         // If JWT verification fails, try Firebase token verification
         user = await this.jwtService.verifyFirebaseToken(tokenString);
-        console.log("user", user);
       }
 
-      console.log(user);
       res.status(HttpStatusCode.Ok).json(user);
     } catch (error) {
       ProcessError(error, res);
