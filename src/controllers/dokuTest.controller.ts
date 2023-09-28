@@ -1,3 +1,4 @@
+/// <reference path="./custom.d.ts" />
 import { Request, Response } from "express";
 import DokuService from "../service/doku.service";
 import { ProcessError } from "../helper/Error/errorHandler";

@@ -1,3 +1,4 @@
+/// <reference path="./custom.d.ts" />
 import { Request, Response } from "express";
 import { ProcessError } from "../helper/Error/errorHandler";
 import OrderService, { ICreateOrder } from "../service/order.service";

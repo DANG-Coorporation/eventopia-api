@@ -32,6 +32,22 @@ export default class UserService {
     }
   }
 
+  async createByGoogle(input: UserCreationAttributes) {
+    try {
+      const isExist = !!(await this.gets({ email: input.email })).length;
+      if (isExist) throw new BadRequestException("Email already exist", {});
+      const user = await User.create({
+        ...input,
+        uniqueId: getUniqId({
+          length: 6,
+        }),
+      });
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async gets(conditions: Partial<UserCreationAttributes>) {
     try {
       const users = await User.findAll({ where: conditions });
@@ -94,7 +110,7 @@ export default class UserService {
       const users = await User.findAndCountAll({
         where: {
           name: {
-            [Op.like]: `%${conditions.name}%`,
+            [Op.like]: `%${conditions.name ?? ""}%`,
           },
         },
         limit,

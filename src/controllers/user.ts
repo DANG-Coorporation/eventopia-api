@@ -1,3 +1,4 @@
+/// <reference path="./custom.d.ts" />
 import { Request, Response } from "express";
 import UserService from "../service/user.service";
 import { HttpStatusCode } from "axios";
@@ -7,17 +8,23 @@ import { validate } from "../helper/function/validator";
 import { postUserValidator } from "../helper/validator/postUser.validator";
 import { checkReferralCodeValidator } from "../helper/validator/checkReferralCode";
 import { loginValidator } from "../helper/validator/login.validator";
+import ReferralLinks from "../database/models/referralLink";
+import JwtService from "../service/jwt.service";
+import { createByGoogleValidator } from "../helper/validator/createUsersByGoogle";
+import { UserAttributes } from "../database/models/user";
 
 export class UserController {
   userServices: UserService;
+  jwtService: JwtService;
 
   constructor() {
     this.userServices = new UserService();
+    this.jwtService = new JwtService();
   }
 
   async paginate(req: Request, res: Response): Promise<void> {
     try {
-      const { page, limit } = req.query;
+      const { page = 1, limit = 10 } = req.query;
       const users = await this.userServices.page({
         page: Number(page),
         limit: Number(limit),
@@ -45,6 +52,15 @@ export class UserController {
     try {
       await validate(postUserValidator, req.body);
       const user = await this.userServices.create(req.body);
+      if (req.body.referralCode) {
+        const uplinkUser = await this.userServices.gets({
+          uniqueId: req.body.referralCode,
+        });
+        await ReferralLinks.create({
+          upLinkId: uplinkUser[0].id,
+          downLinkId: user.id,
+        });
+      }
       res.json(user.toJSON());
     } catch (err) {
       ProcessError(err, res);
@@ -77,12 +93,11 @@ export class UserController {
 
   async checkReferralCode(req: Request, res: Response) {
     try {
-      // const referralCode = req.body.referralCode;
       const body = await validate<{ referralCode: string }>(
         checkReferralCodeValidator,
         req.body
       );
-      const user = await this.userServices.checkReferralCode(body.referralCode);
+      await this.userServices.checkReferralCode(body.referralCode);
       res.status(HttpStatusCode.Ok).json({
         message: "Referral code is valid",
       });
@@ -106,9 +121,22 @@ export class UserController {
 
   async verifyToken(req: Request, res: Response): Promise<void> {
     try {
-      const token = <string>req.headers.authorization;
-      if (!token) throw new BadRequestException("Invalid token", {});
-      const user = await this.userServices.verifyToken(token.split(" ")[1]);
+      const token = req.headers.authorization;
+
+      if (!token) {
+        throw new BadRequestException("Invalid token", {});
+      }
+      const tokenString = token.split(" ")[1];
+      let user;
+
+      try {
+        // Try to verify the token using your custom JWT service
+        user = await this.userServices.verifyToken(tokenString);
+      } catch (error) {
+        // If JWT verification fails, try Firebase token verification
+        user = await this.jwtService.verifyFirebaseToken(tokenString);
+      }
+
       res.status(HttpStatusCode.Ok).json(user);
     } catch (error) {
       ProcessError(error, res);
@@ -121,6 +149,19 @@ export class UserController {
       if (!token) throw new BadRequestException("Invalid token", {});
       const user = await this.userServices.refreshToken(token.split(" ")[1]);
       res.status(HttpStatusCode.Ok).json(user);
+    } catch (error) {
+      ProcessError(error, res);
+    }
+  }
+
+  async createByGoogle(req: Request, res: Response): Promise<void> {
+    try {
+      const body = await validate<UserAttributes>(
+        createByGoogleValidator,
+        req.body
+      );
+      const result = await this.userServices.createByGoogle(body);
+      res.status(HttpStatusCode.Ok).json(result);
     } catch (error) {
       ProcessError(error, res);
     }

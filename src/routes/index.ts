@@ -1,8 +1,9 @@
-import { Request, Response, Router } from "express";
+import { Request, response, Response, Router } from "express";
 import { UserController } from "../controllers/user";
 import EventController from "../controllers/event.controller";
 import DokuTestController from "../controllers/dokuTest.controller";
 import { HttpStatusCode } from "axios";
+import { request } from "https";
 
 export default class MainRouter {
   router: Router;
@@ -47,14 +48,19 @@ export default class MainRouter {
         this.userController.create(req, res)
       );
 
-    this.router.post("/check/referral-code", (req: Request, res: Response) =>
-      this.userController.checkReferralCode(req, res)
+    this.router.post(
+      "/users/check/referral-code",
+      (req: Request, res: Response) =>
+        this.userController.checkReferralCode(req, res)
     );
 
     this.router
       .route("/event")
       .post((req: Request, res: Response) =>
         this.eventController.create(req, res)
+      )
+      .get((req: Request, res: Response) =>
+        this.eventController.paginate(req, res)
       );
 
     this.router.post("/test/get-payment-code", (req: Request, res: Response) =>
