@@ -63,6 +63,18 @@ export default class MainRouter {
         this.eventController.paginate(req, res)
       );
 
+    this.router
+      .route("/event/uniq-id/:uniqId")
+      .get((req: Request, res: Response) =>
+        this.eventController.getEventDetail(req, res)
+      );
+
+    this.router
+      .route("/event/:id")
+      .get((req: Request, res: Response) =>
+        this.eventController.getEventById(req, res)
+      );
+
     this.router.post("/test/get-payment-code", (req: Request, res: Response) =>
       this.testDokuController.generatePaymentCode(req, res)
     );
