@@ -38,6 +38,7 @@ export default class EventService {
         ...input,
         eventId,
       });
+
       return eventTicket.toJSON();
     } catch (error: any) {
       throw error;
@@ -48,7 +49,15 @@ export default class EventService {
     try {
       const event = await Event.findByPk(id);
       if (!event) throw new NotFoundException("Event not Found", {});
-      return event;
+      const tickets = await EventTickets.findAll({
+        where: { eventId: event?.id },
+      });
+      // Periksa apakah tanggal acara lebih besar dari tanggal saat ini
+      const currentDate = new Date();
+      const eventDate = new Date(event.eventStartDateTime);
+
+      const isExpired = eventDate <= currentDate;
+      return { ...event.toJSON(), isExpired, tickets };
     } catch (error) {
       throw new Error(`Error While fetching eventId: ${error}`);
     }
@@ -60,7 +69,7 @@ export default class EventService {
       const limit = input.limit ?? 10;
       const offset = Math.max(page - 1, 0) * limit;
       const conditions = removeLimitAndPage(input.data);
-
+      const currentDate = new Date();
       const whereClause: any = {
         name: {
           [Op.like]: `%${conditions.name}%`,
@@ -75,7 +84,7 @@ export default class EventService {
         whereClause.cityId = conditions.cityId;
       }
 
-      const events = await Event.findAndCountAll({
+      const events: any = await Event.findAndCountAll({
         where: whereClause,
         limit: limit,
         offset: offset,
@@ -96,6 +105,10 @@ export default class EventService {
         where: { uniqueId: uniqId },
       });
 
+      const tickets = await EventTickets.findAll({
+        where: { eventId: event?.id },
+      });
+
       if (!event) {
         throw new Error("Acara tidak ditemukan");
       }
@@ -106,7 +119,7 @@ export default class EventService {
 
       const isExpired = eventDate <= currentDate;
 
-      return { ...event.toJSON(), isExpired } as EventDetail;
+      return { ...event.toJSON(), isExpired, tickets } as EventDetail;
     } catch (error) {
       throw error;
     }
