@@ -27,6 +27,9 @@ export default class AuthMiddleware {
       if (req.path === "/") {
         return next();
       }
+      if (req.path.startsWith("/event") && req.method === "GET") {
+        return next();
+      }
       if (!req.headers.authorization)
         throw new UnauthorizedException("Unauthorized", {});
       req.user = undefined;
