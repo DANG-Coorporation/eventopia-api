@@ -62,4 +62,42 @@ export default class EventController {
       ProcessError(err, res);
     }
   }
+
+  async getEventById(req: Request, res: Response): Promise<void> {
+    try {
+      const eventId = parseInt(req.params.id, 10); // Ambil ID dari parameter URL
+      const event = await this.eventService.getEventById(eventId);
+
+      if (!event) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+
+      res.json({
+        statusCode: 200,
+        message: "success",
+        data: event,
+      });
+    } catch (err) {
+      ProcessError(err, res);
+    }
+  }
+
+  async getEventDetail(req: Request, res: Response) {
+    try {
+      const { uniqId } = req.params;
+
+      // Panggil service untuk mendapatkan detail acara
+      const event = await this.eventService.getEventDetailByUniqId(uniqId);
+
+      // Kirim detail acara sebagai respons
+      res.json({
+        statusCode: 200,
+        message: "success",
+        data: event,
+      });
+    } catch (err) {
+      ProcessError(err, res);
+    }
+  }
 }

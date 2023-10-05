@@ -7,6 +7,7 @@ import { getUniqId } from "../helper/function/getUniqId";
 import { IPaginate } from "../helper/interface/paginate/paginate.interface";
 import bcrypt from "bcrypt";
 import JwtService from "./jwt.service";
+import { EventAttributes } from "../database/models/event";
 export default class UserService {
   jwtService: JwtService;
   constructor() {
