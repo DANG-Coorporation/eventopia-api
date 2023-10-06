@@ -8,6 +8,7 @@ import { UnprocessableEntityException } from "../helper/Error/UnprocessableEntit
 import { getUniqId } from "../helper/function/getUniqId";
 import DokuService from "./doku.service";
 import UserService from "./user.service";
+import PersonOrders from "../database/models/personOrders";
 
 export interface ICreateOrder {
   paymentChannel: string;
@@ -15,6 +16,15 @@ export interface ICreateOrder {
   eventId: number;
   ticketId: number;
   quantity: number;
+  persons: IPersonOrder[];
+}
+interface IPersonOrder {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  identityNumber?: string;
+  dob?: string;
+  gender?: "male" | "female";
 }
 
 export default class OrderService {
@@ -84,6 +94,18 @@ export default class OrderService {
         paymentMethod: input.paymentChannel,
         paymentStatus: paymentStatus.PENDING,
       });
+
+      for (let person of input.persons) {
+        await PersonOrders.create({
+          orderId: order.id,
+          name: person.name,
+          email: person.email,
+          phoneNumber: person.phoneNumber,
+          identityNumber: person.identityNumber,
+          gender: person.gender,
+          dob: person.dob,
+        });
+      }
       return {
         order,
         payment: result,
