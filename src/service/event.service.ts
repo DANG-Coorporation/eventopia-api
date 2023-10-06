@@ -84,14 +84,34 @@ export default class EventService {
         whereClause.cityId = conditions.cityId;
       }
 
-      const events: any = await Event.findAndCountAll({
+      const events = await Event.findAndCountAll({
         where: whereClause,
         limit: limit,
         offset: offset,
         order: [["id", "DESC"]],
       });
 
-      return events;
+      const eventsWithExpirednTickets: any = events.rows.map(async (event) => {
+        const tickets = await EventTickets.findAll({
+          where: { eventId: event.id },
+        });
+
+        // Periksa apakah tanggal acara lebih besar dari tanggal saat ini
+        const eventDate = new Date(event.eventStartDateTime);
+
+        const isExpired = eventDate <= currentDate;
+
+        return {
+          ...event.toJSON(),
+          isExpired,
+          tickets,
+        };
+      });
+
+      return {
+        ...events,
+        rows: await Promise.all(eventsWithExpirednTickets),
+      };
     } catch (error) {
       console.error("Error mendapatkan pagination", error);
       throw error;
