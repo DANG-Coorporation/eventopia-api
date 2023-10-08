@@ -13,6 +13,14 @@ export default class ReviewController {
 
   async create(req: Request, res: Response) {
     try {
+      const checkReview = await this.reviewService.gets({
+        userId: req.body.userId,
+        eventId: req.body.eventId,
+      });
+
+      if (checkReview.length > 0) {
+        throw new Error("Review already exists");
+      }
       const result = await this.reviewService.create(req.body);
       res.status(200).json({
         status: 200,
@@ -43,7 +51,9 @@ export default class ReviewController {
 
   async getById(req: Request, res: Response) {
     try {
-      const result = await this.reviewService.getById(Number(req.params.id));
+      const result = await this.reviewService.gets({
+        eventId: Number(req.params.id),
+      });
       res.status(200).json({
         status: 200,
         message: "Success",

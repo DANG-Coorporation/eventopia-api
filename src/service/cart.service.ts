@@ -7,7 +7,7 @@ import { BadRequestException } from "../helper/Error/BadRequestException/BadRequ
 export default class CartService {
   async create(input: CartCreationAttributes) {
     try {
-      return await Carts.create(input);
+      return await Carts.create({...input,deleted:false});
     } catch (error) {
       throw error;
     }
@@ -35,6 +35,16 @@ export default class CartService {
   async getById(id: number) {
     try {
       const cart = await Carts.findByPk(id);
+      if (!cart) throw new Error("Cart not found");
+      return cart;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getByUserId(userId: number) {
+    try {
+      const cart = await Carts.findAll({ where: { userId } });
       if (!cart) throw new Error("Cart not found");
       return cart;
     } catch (error: any) {

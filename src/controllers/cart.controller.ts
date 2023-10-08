@@ -40,7 +40,7 @@ export default class CartController {
 
   async getById(req: Request, res: Response) {
     try {
-      const result = await this.cartService.getById(Number(req.params.id));
+      const result = await this.cartService.getByUserId(Number(req.params.id));
       res.status(200).json({
         status: 200,
         message: "Success",
